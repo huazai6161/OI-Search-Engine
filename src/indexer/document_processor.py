@@ -16,24 +16,31 @@ class DocumentProcessor:
         self.api_key = OPENAI_API_KEY
         self.embedding_model = EMBEDDING_MODEL
         self.client = OpenAI(api_key=self.api_key)
-        
-    def _extract_question_and_solution(self, content: str) -> Tuple[str, str]:
-        """Extract question and solution from file content
-        
-        Args:
-            content (str): Full content of the Python file
-            
-        Returns:
-            Tuple[str, str]: (question, solution)
+
+    def _extract_summary(self, question: str, solution: str) -> str:
+
+        prompt = f"""题目描述：{question}
+题解：{solution}
+请总结以上算法竞赛题目的考察点，并以简明专业的语言描述。你的总结应包括：  
+1. 题目涉及的主要算法和数据结构。
+2. 题目要求考生掌握的关键技巧（题解有可能提到）。
+3. 总结应简洁、直接，符合竞赛题解风格，不要使用冗余的描述。
+4. 输出格式：“主要算法和数据结构：xxx；关键技巧：xxx。”
         """
-        # Split content at class Solution
-        parts = content.split("class Solution")
-        if len(parts) != 2:
-            return "", ""
-            
-        question = parts[0].strip()
-        solution = "class Solution" + parts[1].strip()
-        return question, solution
+        
+        response = self.client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "你是一个信息学竞赛专家。"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0,
+            max_tokens=1000
+        )
+
+        content = response.choices[0].message.content
+
+        return content
     
     def _extract_concepts(self, question: str, solution: str) -> List[str]:
         """Extract LeetCode concepts using OpenAI
@@ -51,7 +58,7 @@ class DocumentProcessor:
         prompt = f"""知识点大纲：{syllabus}
         题目描述：{question}
         题解：{solution}
-        请阅读题目、题解、以及知识点大纲，分析该题目所考察的大纲知识点（最多5个），提取这些知识点，并用','分隔输出。不要输出其他内容。
+        请阅读题目、题解、以及知识点大纲，分析该题目所考察的最重要的大纲知识点（最多5个），提取这些知识点，并用','分隔输出。不要输出其他内容。
         """
         
         response = self.client.chat.completions.create(
@@ -86,13 +93,28 @@ class DocumentProcessor:
         question_number = os.path.basename(file_path).replace('.md', '')
         
         # Extract question and solution
-        question, solution = content, ""
+        question = content
+
+        # solution
+        solution_path = str(file_path).replace('/statement/', '/solution/')
+        solution_path = Path(solution_path)
+
+        print(solution_path)
+
+        with open(solution_path, 'r', encoding='utf-8') as f:
+            solution = f.read()
         
         # Get concepts
         concepts = self._extract_concepts(question, solution)
+
+        # Get summary
+        summary = self._extract_summary(question, solution)
         
-        # Get embedding for the question
-        question_embedding = self._get_embedding(question + f"\nconcept: {','.join(concepts)}")
+        # Get embeddings
+        question_embedding = self._get_embedding(question)
+        sorted_concepts = sorted(concepts)
+        concepts_embedding = self._get_embedding(' '.join(sorted_concepts))
+        summary_embedding = self._get_embedding(summary)
         
         return {
             'id': question_number,
@@ -100,7 +122,10 @@ class DocumentProcessor:
             'question': question,
             'solution': solution,
             'concepts': concepts,
-            'embedding': question_embedding
+            'summary': summary,
+            'question_embedding': question_embedding,
+            'conscepts_embedding': concepts_embedding,
+            'summary_embedding': summary_embedding
         }
     
     def _get_embedding(self, text: str) -> List[float]:

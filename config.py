@@ -14,4 +14,4 @@ QUESTIONS_DIR = DATA_DIR / "questions"
 VECTOR_STORE_PATH = DATA_DIR / "vector_store"
 
 # Embedding model
-EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_MODEL = "text-embedding-3-large"
