@@ -3,6 +3,7 @@ from typing import Dict, List, Tuple
 from pathlib import Path
 from openai import OpenAI
 import json
+from config import OPENAI_API_KEY, EMBEDDING_MODEL, DATA_DIR
 
 class DocumentProcessor:
     def __init__(self):
@@ -12,8 +13,8 @@ class DocumentProcessor:
             api_key (str): OpenAI API key
             embedding_model (str): Name of the embedding model to use
         """
-        self.api_key = ""
-        self.embedding_model = "text-embedding-3-small"
+        self.api_key = OPENAI_API_KEY
+        self.embedding_model = EMBEDDING_MODEL
         self.client = OpenAI(api_key=self.api_key)
         
     def _extract_question_and_solution(self, content: str) -> Tuple[str, str]:
@@ -44,7 +45,7 @@ class DocumentProcessor:
         Returns:
             List[str]: List of concepts
         """
-        with open('/Users/huazai676/Documents/Project/IOI assistant/data/IOI_outline/NOI.json', 'r', encoding='utf-8') as file:
+        with open(DATA_DIR / 'IOI_outline/NOI.json', 'r', encoding='utf-8') as file:
             syllabus = json.load(file)
 
         prompt = f"""知识点大纲：{syllabus}

@@ -5,22 +5,20 @@ import json
 from typing import List, Dict
 from pathlib import Path
 from openai import OpenAI
-
-VECTOR_STORE_PATH = "/Users/huazai676/Documents/Project/IOI assistant/data/vector_store"
-EMBEDDING_MODEL = "text-embedding-3-small"
+from config import OPENAI_API_KEY, VECTOR_STORE_PATH, EMBEDDING_MODEL
 
 class SimilaritySearcher:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key = OPENAI_API_KEY):
         self.client = OpenAI(api_key=api_key)
         
         # Load the FAISS index
-        self.index = faiss.read_index("/Users/huazai676/Documents/Project/IOI assistant/data/vector_store/questions.index")
+        self.index = faiss.read_index(VECTOR_STORE_PATH / "questions.index")
         
         # Load metadata
-        with open("/Users/huazai676/Documents/Project/IOI assistant/data/vector_store/metadata.pkl", 'rb') as f:
+        with open(VECTOR_STORE_PATH / "metadata.pkl", 'rb') as f:
             self.metadata = pickle.load(f)
             
-        with open("/Users/huazai676/Documents/Project/IOI assistant/data/vector_store/concept_mapping.json", 'r') as f:
+        with open(VECTOR_STORE_PATH / "concept_mapping.json", 'r') as f:
             self.concept_mapping = json.load(f)
     
     def _get_embedding(self, text: str) -> np.ndarray:
