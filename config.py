@@ -15,3 +15,16 @@ VECTOR_STORE_PATH = DATA_DIR / "vector_store"
 
 # Embedding model
 EMBEDDING_MODEL = "text-embedding-3-large"
+
+# Completion model
+COMPLETION_MODEL = "gpt-4o-mini"
+
+# LeetCode concepts
+LEETCODE_CONCEPTS = [
+    "Array", "String", "Hash Table", "Dynamic Programming",
+    "Math", "Depth-First Search", "Binary Search", "Binary Tree",
+    "Two Pointers", "Breadth-First Search", "Tree", "Stack",
+    "Greedy", "Backtracking", "Design", "Graph", "Linked List",
+    "Heap", "Sliding Window", "Union Find", "Divide and Conquer",
+    "Trie", "Recursion", "Queue"
+]

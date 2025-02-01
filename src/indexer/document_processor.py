@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 from pathlib import Path
 from openai import OpenAI
 import json
-from config import OPENAI_API_KEY, EMBEDDING_MODEL, DATA_DIR
+from config import OPENAI_API_KEY, EMBEDDING_MODEL, DATA_DIR, COMPLETION_MODEL
 
 class DocumentProcessor:
     def __init__(self):
@@ -29,7 +29,7 @@ class DocumentProcessor:
         """
         
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=COMPLETION_MODEL,
             messages=[
                 {"role": "system", "content": "你是一个信息学竞赛专家。"},
                 {"role": "user", "content": prompt}
@@ -62,7 +62,7 @@ class DocumentProcessor:
         """
         
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=COMPLETION_MODEL,
             messages=[
                 {"role": "system", "content": "你是一个信息学竞赛专家。"},
                 {"role": "user", "content": prompt}

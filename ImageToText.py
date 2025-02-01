@@ -1,7 +1,7 @@
 import openai
 import base64
 import os
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, COMPLETION_MODEL
 
 def encode_image(image_path):
     """Encodes an image to base64 for API submission."""
@@ -22,7 +22,7 @@ def send_images_to_gpt(image_paths, prompt):
     ]
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=COMPLETION_MODEL,
         messages=[
             {"role": "system", "content": f"You are an expert in informatics olympiad."},
             {
