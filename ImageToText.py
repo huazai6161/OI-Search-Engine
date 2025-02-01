@@ -1,6 +1,7 @@
 import openai
 import base64
 import os
+from config import OPENAI_API_KEY
 
 def encode_image(image_path):
     """Encodes an image to base64 for API submission."""
@@ -10,7 +11,7 @@ def encode_image(image_path):
 def send_images_to_gpt(image_paths, prompt):
     
     # Initialize OpenAI client
-    client = openai.OpenAI(api_key="")
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
     images_content = [
         {
