@@ -42,17 +42,8 @@ def display_solution(solution: str, similar_questions: list):
     
     with col1:
         st.subheader("Generated Solution")
-        
-        # Split solution into sections if it contains headers
-        sections = solution.split("\n\n")
-        for section in sections:
-            if section.strip():
-                st.markdown(section)
-                
-        # Add syntax highlighted code block if present
-        if "```python" in solution:
-            code = solution.split("```python")[1].split("```")[0]
-            st.code(code, language="python")
+
+        st.markdown(solution)
     
     with col2:
         st.subheader("Similar Questions")
@@ -72,9 +63,9 @@ def display_solution(solution: str, similar_questions: list):
         st.markdown(", ".join(sorted(all_concepts)))
 
 def main():
-    st.title("IOI Solution Generator 🧮")
+    st.title("OI Search Engine 🧮")
     st.markdown("""
-    Enter your coding question below, and I'll help you find similar questions and generate a solution!
+    Enter your question below, and I'll help you find similar questions and generate a solution!
     """)
     
     # Initialize components
@@ -85,9 +76,9 @@ def main():
     
     # Main input area
     question = st.text_area(
-        "Enter your coding question:",
+        "Enter your question:",
         height=200,
-        placeholder="Paste your LeetCode question here..."
+        placeholder="Paste here...(markdown format)"
     )
     
     col1, col2 = st.columns([1, 5])

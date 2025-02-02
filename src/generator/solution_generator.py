@@ -34,7 +34,7 @@ class SolutionGenerator:
         新题目:
         {question}
 
-        请按照以上格式生成解答:
+        请按照以上格式生成解答，注意全程使用 markdown 格式，并在数学公式两侧加入 '$' 符号。
         """
         
         response = self.client.chat.completions.create(
